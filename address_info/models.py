@@ -4,8 +4,7 @@ from django.db import models
 
 class Transaction(models.Model):
     transaction_id = models.CharField(max_length=54)
-    inputs = JSONField()
-    outputs = JSONField()
+    tx_json = JSONField()
     timestamp = models.IntegerField(null=True)
 
 

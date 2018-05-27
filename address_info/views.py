@@ -6,6 +6,7 @@ from address_info.forms import AddressForm
 from time import strftime
 from datetime import datetime
 import requests
+from django.utils import timezone
 
 
 class AddressInfoView(View):
@@ -72,13 +73,23 @@ class AddressInfoView(View):
                         tx_outs=data["txs"][i]["out"],
                         inp_sum=inp_sum,
                         out_sum=out_sum,
-                        time=datetime.fromtimestamp(data["txs"][i]["time"])
+                        time=timezone.make_aware(
+                            datetime.fromtimestamp(data["txs"][i]["time"])
+                        )
                     )
                     addr = Address.objects.get(address=data["address"])
                     addr.transactions.add(new_trx)
                     addr.save()
-                return HttpResponse("ziała")
-
+                txs = addr.transactions.all()
+                ctx = {
+                    "addr": addr,
+                    "txs": txs,
+                }
+                return render(
+                    request,
+                    "addr_result.html",
+                    context=ctx
+                )
 
 
 

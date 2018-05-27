@@ -10,6 +10,12 @@ class Transaction(models.Model):
     out_sum = models.BigIntegerField()
     time = models.DateTimeField(null=True)
 
+    def inp_sum_bit(self):
+        return self.inp_sum / 100000000
+
+    def out_sum_bit(self):
+        return self.out_sum / 100000000
+
 
 class Address(models.Model):
     address = models.CharField(max_length=35)

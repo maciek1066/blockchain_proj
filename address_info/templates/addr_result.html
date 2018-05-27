@@ -37,20 +37,25 @@
             <th>Transactions:</th>
             {% for tx in txs %}
                 <tr>
-                    <td>{{ tx.transaction_id }},</td>
-                    <td><b>date:</b>{{ tx.time }}</td>
-                    <td>
+                    <td><b>transaction:</b> {{ tx.transaction_id }},</td>
+                    <td><b>date:</b><br>{{ tx.time }}</td>
                 </tr>
+
                 <tr>
-{#                        {{ tx.tx_inputs }}#}
                     <td>
-                    <b>Inputs:</b><br>
-                    {% for inp in tx.tx_inputs %}
-                        {{ inp.prev_out.addr }}<br>
-{#                        {% for value in inp %}#}
-{#                            {{ value }}#}
-{#                        {% endfor %}#}
-                    {% endfor %}
+                        <b>Inputs:</b><br>
+                        {% for inp in tx.tx_inputs %}
+                            {{ inp.prev_out.addr }}<br>
+                        {% endfor %}
+                        <b>input sum:</b><br> {{ tx.inp_sum_bit }}
+                    </td>
+
+                    <td>
+                        <b>Outputs:</b><br>
+                        {% for out in tx.tx_outs %}
+                            {{ out.addr }}<br>
+                        {% endfor %}
+                        <b>output sum:</b><br> {{ tx.out_sum_bit }}
                     </td>
                 </tr>
             {% endfor %}

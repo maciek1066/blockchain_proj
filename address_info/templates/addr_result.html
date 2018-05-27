@@ -1,0 +1,60 @@
+{% extends "main.html" %}
+
+{% block content %}
+    <div>
+    <table>
+        <tbody>
+            <th>Bitcoin address summary</th>
+            <tr>
+                <td>address:</td>
+                <td>{{ addr.address }}</td>
+            </tr>
+            <tr>
+                <td>hash 160:</td>
+                <td>{{ addr.hash160 }}</td>
+            </tr>
+            <tr>
+                <td>number of transactions:</td>
+                <td>{{ addr.no_transactions }}</td>
+            <tr>
+                <td>total received:</td>
+                <td>{{ addr.received_bit }}</td>
+            </tr>
+            <tr>
+                <td>total sent:</td>
+                <td>{{ addr.sent_bit }}</td>
+            <tr>
+                <td>balance:</td>
+                <td>{{ addr.balance_bit }}</td>
+            <tr>
+
+        </tbody>
+    </table>
+    </div>
+    <div>
+    <table>
+        <tbody>
+            <th>Transactions:</th>
+            {% for tx in txs %}
+                <tr>
+                    <td>{{ tx.transaction_id }},</td>
+                    <td><b>date:</b>{{ tx.time }}</td>
+                    <td>
+                </tr>
+                <tr>
+{#                        {{ tx.tx_inputs }}#}
+                    <td>
+                    <b>Inputs:</b><br>
+                    {% for inp in tx.tx_inputs %}
+                        {{ inp.prev_out.addr }}<br>
+{#                        {% for value in inp %}#}
+{#                            {{ value }}#}
+{#                        {% endfor %}#}
+                    {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

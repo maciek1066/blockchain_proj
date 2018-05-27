@@ -23,4 +23,5 @@ from address_info.views import AddressInfoView
 urlpatterns = [
     path('admin/', admin.site.urls),
     url('^$', AddressInfoView.as_view()),
+    url('^addr_result/$', AddressInfoView.as_view()),
 ]

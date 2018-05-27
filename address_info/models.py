@@ -6,7 +6,9 @@ class Transaction(models.Model):
     transaction_id = models.CharField(max_length=256)
     tx_inputs = JSONField()
     tx_outs = JSONField()
-    timestamp = models.IntegerField(null=True)
+    inp_sum = models.BigIntegerField()
+    out_sum = models.BigIntegerField()
+    time = models.DateTimeField(null=True)
 
 
 class Address(models.Model):
@@ -17,3 +19,12 @@ class Address(models.Model):
     sent = models.BigIntegerField()
     balance = models.BigIntegerField()
     transactions = models.ManyToManyField(Transaction)
+
+    def received_bit(self):
+        return self.received / 100000000
+
+    def sent_bit(self):
+        return self.sent / 100000000
+
+    def balance_bit(self):
+        return self.balance / 100000000

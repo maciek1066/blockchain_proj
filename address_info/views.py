@@ -3,6 +3,8 @@ from django.views import View
 from django.http import HttpResponse
 from address_info.models import Address, Transaction
 from address_info.forms import AddressForm
+from time import strftime
+from datetime import datetime
 import requests
 
 
@@ -24,7 +26,17 @@ class AddressInfoView(View):
             address = form.cleaned_data['address']
             if Address.objects.filter(
                     address__contains=address).exists():
-                return HttpResponse("Address already exists in db")
+                addr = Address.objects.get(address=address)
+                txs = addr.transactions.all()
+                ctx = {
+                    "addr": addr,
+                    "txs": txs,
+                }
+                return render(
+                    request,
+                    "addr_result.html",
+                    context=ctx
+                )
             else:
                 response = requests.get(
                     "https://blockchain.info/rawaddr/{}".format(address))
@@ -44,13 +56,23 @@ class AddressInfoView(View):
                     sent=sent,
                     balance=balance,
                 )
-                # transactions many to many relation
+                # transactions for given address
                 for i in range(len(data["txs"])):
+                    #  counting input/output sums
+                    inp_sum = 0
+                    out_sum = 0
+                    for inp in data["txs"][i]["inputs"]:
+                        inp_sum += (inp["prev_out"]["value"])
+                    for out in data["txs"][i]["out"]:
+                        out_sum += (out["value"])
+
                     new_trx = Transaction.objects.create(
                         transaction_id=data["txs"][i]["hash"],
                         tx_inputs=data["txs"][i]["inputs"],
                         tx_outs=data["txs"][i]["out"],
-                        timestamp=data["txs"][i]["time"]
+                        inp_sum=inp_sum,
+                        out_sum=out_sum,
+                        time=datetime.fromtimestamp(data["txs"][i]["time"])
                     )
                     addr = Address.objects.get(address=data["address"])
                     addr.transactions.add(new_trx)

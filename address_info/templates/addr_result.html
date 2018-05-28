@@ -6,6 +6,11 @@
         <tbody>
             <th>Bitcoin address summary</th>
             <tr>
+                <td>{% load static %}
+                    <img src="media/{{ addr.address }}.jpg">
+                </td>
+            </tr>
+            <tr>
                 <td>address:</td>
                 <td>{{ addr.address }}</td>
             </tr>

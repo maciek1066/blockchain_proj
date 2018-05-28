@@ -8,6 +8,7 @@ from datetime import datetime
 import requests
 from django.utils import timezone
 from django.db.models import Count, Sum
+import qrcode
 
 
 class AddressInfoView(View):
@@ -79,6 +80,20 @@ class AddressInfoView(View):
                     sent=sent,
                     balance=balance,
                 )
+
+                # creating QR code for address
+                qr = qrcode.QRCode(
+                    version=1,
+                    error_correction=qrcode.constants.ERROR_CORRECT_H,
+                    box_size=3,
+                    border=4,
+                )
+                data_img = address
+                qr.add_data(data_img)
+                qr.make(fit=True)
+                img = qr.make_image()
+                img.save("media/{}.jpg".format(address))
+
                 # transactions for given address
                 for i in range(len(data["txs"])):
                     #  counting input/output sums

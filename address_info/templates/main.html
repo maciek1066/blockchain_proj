@@ -9,7 +9,11 @@
     <h3>bitcoin address check</h3>
         <form action="" method="POST">
             {% csrf_token %}
-            {{ form }}
+            {{ form }}<br>
+            <input type="checkbox" name="date" value="date">
+            <label for="check_date">Filter transactions by date and time</label><br>
+            <input type="datetime-local" name="since"><br>
+            <input type="datetime-local" name="to"><br>
             <input type="submit" value="check">
         </form>
     {{ my_datetime }}

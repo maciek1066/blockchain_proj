@@ -10,10 +10,10 @@
         <form action="" method="POST">
             {% csrf_token %}
             {{ form }}<br>
-            <input type="checkbox" name="date" value="date">
-            <label for="check_date">Filter transactions by date and time</label><br>
-            <input type="datetime-local" name="since"><br>
-            <input type="datetime-local" name="to"><br>
+            <input type="checkbox" name="date" value="date_filter">
+            <label for="date">Filter transactions by date and time</label><br>
+            <input type="date" name="since"><br>
+            <input type="date" name="to"><br>
             <input type="submit" value="check">
         </form>
     {{ my_datetime }}

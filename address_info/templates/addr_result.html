@@ -31,6 +31,27 @@
         </tbody>
     </table>
     </div>
+
+    {% if tx_balance.balance and txs_count.transaction_id__count and tx_inp_sum.inp_sum__sum %}
+        <table>
+
+            <tbody>
+                <th>filtered transaction details:</th>
+                <tr>
+                    <td>
+                        number of transactions: {{ txs_count.transaction_id__count }}
+                    </td>
+                    <td>
+                        sum of inputs: {{ tx_inp_sum.inp_sum__sum }}
+                    </td>
+                    <td>
+                        balance of transactions: {{ tx_balance.balance }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+
     <div>
     <table>
         <tbody>

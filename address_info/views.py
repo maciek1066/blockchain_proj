@@ -7,6 +7,7 @@ from time import strftime
 from datetime import datetime
 import requests
 from django.utils import timezone
+from django.db.models import Count, Sum
 
 
 class AddressInfoView(View):
@@ -33,6 +34,27 @@ class AddressInfoView(View):
                     "addr": addr,
                     "txs": txs,
                 }
+                if request.POST.get('date') == 'date_filter':
+                    since = request.POST.get('since')
+                    to = request.POST.get('to')
+                    txs = addr.transactions.filter(time__range=(since, to))
+                    txs_count = txs.aggregate(Count('transaction_id'))
+                    tx_inp_sum = txs.aggregate(Sum('inp_sum'))
+                    tx_balance = txs.aggregate(balance=(Sum('inp_sum')) - (Sum('out_sum')))
+                    if isinstance(tx_balance["balance"], int) and tx_balance["balance"] != 0:
+                        tx_balance["balance"] = tx_balance["balance"]/100000000
+                    if isinstance(tx_inp_sum["inp_sum__sum"], int) and tx_inp_sum["inp_sum__sum"] != 0:
+                        tx_inp_sum["inp_sum__sum"] = tx_inp_sum["inp_sum__sum"]/100000000
+                    trx_filter = True
+
+                    ctx = {
+                        "trx_filter": trx_filter,
+                        "addr": addr,
+                        "txs": txs,
+                        "txs_count": txs_count,
+                        "tx_inp_sum": tx_inp_sum,
+                        "tx_balance": tx_balance,
+                    }
                 return render(
                     request,
                     "addr_result.html",
@@ -85,6 +107,27 @@ class AddressInfoView(View):
                     "addr": addr,
                     "txs": txs,
                 }
+                if request.POST.get('date') == 'date_filter':
+                    since = request.POST.get('since')
+                    to = request.POST.get('to')
+                    txs = addr.transactions.filter(time__range=(since, to))
+                    txs_count = txs.aggregate(Count('transaction_id'))
+                    tx_inp_sum = txs.aggregate(Sum('inp_sum'))
+                    tx_inp_sum["inp_sum__sum"] = tx_inp_sum["inp_sum__sum"]/100000000
+                    tx_balance = txs.aggregate(balance=(Sum('inp_sum')) - (Sum('out_sum')))
+                    if isinstance(tx_balance["balance"], int) and tx_balance["balance"] != 0:
+                        tx_balance["balance"] = tx_balance["balance"]/100000000
+                    if isinstance(tx_inp_sum["inp_sum__sum"], int) and tx_inp_sum["inp_sum__sum"] != 0:
+                        tx_inp_sum["inp_sum__sum"] = tx_inp_sum["inp_sum__sum"]/100000000
+                    trx_filter = True
+                    ctx = {
+                        "trx_filter": trx_filter,
+                        "addr": addr,
+                        "txs": txs,
+                        "txs_count": txs_count,
+                        "tx_inp_sum": tx_inp_sum,
+                        "tx_balance": tx_balance,
+                    }
                 return render(
                     request,
                     "addr_result.html",
